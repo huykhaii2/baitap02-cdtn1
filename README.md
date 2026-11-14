@@ -1,6 +1,6 @@
 # Smart CRM – Mekong Mobile · Luồng L2: Tiếp nhận và phân loại yêu cầu bảo hành
 
-**Repo:** https://github.com/huykhaii2/baitap02-cdtn1 · **Phiên bản nộp Bài tập 2:** tag [`v0.2`](https://github.com/huykhaii2/baitap02-cdtn1/releases/tag/v0.2)
+**Repo:** https://github.com/huykhaii2/baitap02-cdtn1 · **Bài tập 2:** tag [`v0.2`](https://github.com/huykhaii2/baitap02-cdtn1/tree/v0.2) · **Bài tập 3:** tag [`v1.0`](https://github.com/huykhaii2/baitap02-cdtn1/tree/v1.0) – chạy bằng Docker theo [`docs/deployment-guide.md`](docs/deployment-guide.md)
 
 Đồ án học phần **Chuyên đề tốt nghiệp 1** – Trường Đại học Văn Lang, Khoa Công nghệ Thông tin – Học kỳ 1, năm học 2026 – 2027.
 
@@ -224,3 +224,4 @@ Các thay đổi so với thiết kế BT1 và lý do: [`docs/thay-doi-thiet-ke.
 | 1.1 | 19/10/2026 | Sửa theo phản hồi BT1 (TD-01 → TD-04); Sprint 1 – công nghệ, migration, sinh mã phiếu (TD-05 → TD-07) |
 | 1.2 | 23/10/2026 | Sprint 2 – thiết kế giao diện, phạm vi, tách lớp nghiệp vụ khỏi HTTP, CRUD S1/S2 (TD-08 → TD-15) |
 | 1.3 | 14/11/2026 | Khắc phục sau phản hồi BT2 (TD-16 → TD-26): đẩy đủ mã nguồn, test, migration, tài liệu; gỡ `.env`; chuyển sang repo mới `baitap02-cdtn1`, tag `v0.2` |
+| 1.4 | 14/11/2026 | Bài tập 3 (`v1.0`): 12 test case + Test Plan / Report, đóng gói Docker (2 lệnh), Deployment Guide và API docs tiếng Anh, checklist bảo mật 7 mục, Bug Log 7 lỗi |
