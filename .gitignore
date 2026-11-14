@@ -1,0 +1,28 @@
+# Biến môi trường thật – KHÔNG commit (chỉ commit .env.example). Gồm cả backend/db/sql.env cũ (TD-17).
+.env
+.env.*
+*.env
+!.env.example
+
+# Phụ thuộc và kết quả build
+node_modules/
+dist/
+build/
+coverage/
+
+# Log, dữ liệu tạm
+*.log
+logs/
+tmp/
+
+# IDE và hệ điều hành
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# File tạm của draw.io và Office
+*.drawio.bkp
+*.drawio.dtmp
+~$*

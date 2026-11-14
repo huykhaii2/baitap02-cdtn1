@@ -1,0 +1,38 @@
+$ npm run test:db
+
+
+▶ Xác thực
+  ✔ GET /api/health → 200 khi CSDL chạy (4.92814ms)
+  ✔ kt3 (đã khoá) → 403 ACCOUNT_LOCKED; sai mật khẩu → 401; không token → 401 TOKEN_REQUIRED (147.236295ms)
+✔ Xác thực (494.129145ms)
+▶ Luồng chính UC01 → UC02 → UC03 → UC05 → UC06
+  ✔ T1: Nhân viên tiếp nhận tạo phiếu, SĐT + IMEI mới → 201 (tạo luôn khách hàng và thiết bị) (18.562338ms)
+  ✔ NFR4: Nhân viên tiếp nhận / Kỹ thuật viên gọi phân loại → 403, phiếu vẫn Mới (13.275002ms)
+  ✔ T4: thiếu danh mục → 400 ISSUE_CATEGORY_REQUIRED; mức ưu tiên lạ → 400 INVALID_PRIORITY (5.998908ms)
+  ✔ T6 trước T4: phân công phiếu chưa phân loại → 409 INVALID_TRANSITION (8.524077ms)
+  ✔ T4: Điều phối viên phân loại HIGH → 200, hạn xử lý ≈ +24 giờ (BR4) (8.813749ms)
+  ✔ T6: thiếu kỹ thuật viên → 400 TECHNICIAN_REQUIRED; phân công kt1 → 200 ASSIGNED (11.617173ms)
+  ✔ kt2 không xem được phiếu của kt1 (403) và danh sách của kt2 không chứa phiếu này (14.841968ms)
+  ✔ T7: kt1 xác nhận nhận phiếu → IN_PROGRESS; T8: lịch sử đúng 4 dòng theo thứ tự (NFR5) (10.860102ms)
+  ✔ T2: tìm theo mã phiếu và lọc theo trạng thái trả đúng phiếu, phân trang 20/trang (4.039509ms)
+  ✔ không có API sửa / xoá phiếu (BR6) (3.927676ms)
+✔ Luồng chính UC01 → UC02 → UC03 → UC05 → UC06 (101.378256ms)
+▶ CRUD khách hàng (S1) và thiết bị (S2)
+  ✔ tạo → sửa → thêm thiết bị → xoá khách bị 409 → xoá thiết bị 204 → xoá khách 204 (20.285619ms)
+  ✔ SĐT trùng → 409 PHONE_EXISTS; IMEI trùng → 409 IMEI_EXISTS (8.748925ms)
+  ✔ Điều phối viên đọc được (200) nhưng không ghi được (403) (6.913676ms)
+  ✔ xoá thiết bị đã có phiếu → 409 DEVICE_HAS_TICKETS (9.165089ms)
+✔ CRUD khách hàng (S1) và thiết bị (S2) (45.476703ms)
+▶ BR2 – một IMEI chỉ có một phiếu chưa đóng
+  ✔ ca 1 – tầng nghiệp vụ: tạo phiếu thứ hai cho cùng IMEI → CONFLICT OPEN_TICKET_EXISTS, CSDL vẫn chỉ có 1 phiếu (14.024192ms)
+  ✔ ca 2 – tầng CSDL: INSERT thẳng phiếu chưa đóng thứ hai (bỏ qua service) bị ux_ticket_open_device chặn (6.926521ms)
+  ✔ ca 3 – phiếu cũ đã đóng (Từ chối) thì được tạo phiếu mới cho cùng IMEI (17.75546ms)
+✔ BR2 – một IMEI chỉ có một phiếu chưa đóng (47.924666ms)
+ℹ tests 19
+ℹ suites 4
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 911.926869

@@ -1,0 +1,55 @@
+$ bash scripts/demo-api.sh
+
+== 0. Sức khoẻ hệ thống
+GET /health → HTTP 200
+{"status":"ok","db":"ok","service":"Smart CRM – Mekong Mobile · L2"}
+
+== A1. Đăng nhập 3 vai trò (+ tài khoản đã khoá)
+POST /auth/login → HTTP 403
+{"error":{"code":"ACCOUNT_LOCKED","message":"Tài khoản đã bị khoá. Liên hệ quản lý trung tâm."}}
+
+== T1. Nhân viên tiếp nhận tạo phiếu (SĐT 0906093107, IMEI 981134039206931 – tạo luôn khách hàng và thiết bị)
+POST /tickets → HTTP 201
+{"id":40,"ticketCode":"BH-2026-000018","deviceId":60,"issueDescription":"Máy tự tắt khi còn 30% pin","issueCategoryId":null,"priority":null,"dueDate":null,"status":"NEW","assignedTo":null,"createdBy":1,"createdAt":"2026-11-14T07:01:51.351Z","updatedAt":"2026-11-14T07:01:51.351Z","warrantyExpired":false,"overdue":false,"customer":{"id":58,"fullName":"Khách demo API","phone":"0906093107"},"de
+
+== BR2. Tạo phiếu thứ hai cho cùng IMEI → 409
+POST /tickets → HTTP 409
+{"error":{"code":"OPEN_TICKET_EXISTS","message":"Thiết bị đang có phiếu BH-2026-000018 chưa đóng.","details":{"ticketCode":"BH-2026-000018"}}}
+
+== NFR4. Nhân viên tiếp nhận gọi phân loại → 403
+POST /tickets/BH-2026-000018/classify → HTTP 403
+{"error":{"code":"ROLE_NOT_ALLOWED","message":"Vai trò của bạn không được phép phân loại phiếu.","details":{"allowedRoles":["COORDINATOR"]}}}
+
+== T4. Điều phối viên phân loại (thiếu danh mục → 400, rồi hợp lệ → 200)
+POST /tickets/BH-2026-000018/classify → HTTP 400
+{"error":{"code":"ISSUE_CATEGORY_REQUIRED","message":"Vui lòng chọn danh mục lỗi.","details":{"field":"issueCategoryId"}}}
+POST /tickets/BH-2026-000018/classify → HTTP 200
+{"id":40,"ticketCode":"BH-2026-000018","deviceId":60,"issueDescription":"Máy tự tắt khi còn 30% pin","issueCategoryId":2,"priority":"HIGH","dueDate":"2026-11-15T07:01:51.442Z","status":"CLASSIFIED","assignedTo":null,"createdBy":1,"createdAt":"2026-11-14T07:01:51.351Z","updatedAt":"2026-11-14T07:01:51.441Z","warrantyExpired":false,"overdue":false,"customer":{"id":58,"fullName":"Khách demo AP
+
+== L2 + T6. Phân công cho kỹ thuật viên kt1
+POST /tickets/BH-2026-000018/assign → HTTP 200
+{"id":40,"ticketCode":"BH-2026-000018","deviceId":60,"issueDescription":"Máy tự tắt khi còn 30% pin","issueCategoryId":2,"priority":"HIGH","dueDate":"2026-11-15T07:01:51.442Z","status":"ASSIGNED","assignedTo":3,"createdBy":1,"createdAt":"2026-11-14T07:01:51.351Z","updatedAt":"2026-11-14T07:01:51.496Z","warrantyExpired":false,"overdue":false,"customer":{"id":58,"fullName":"Khách demo API","p
+
+== T7. Kỹ thuật viên xác nhận nhận phiếu
+POST /tickets/BH-2026-000018/acknowledge → HTTP 200
+{"id":40,"ticketCode":"BH-2026-000018","deviceId":60,"issueDescription":"Máy tự tắt khi còn 30% pin","issueCategoryId":2,"priority":"HIGH","dueDate":"2026-11-15T07:01:51.442Z","status":"IN_PROGRESS","assignedTo":3,"createdBy":1,"createdAt":"2026-11-14T07:01:51.351Z","updatedAt":"2026-11-14T07:01:51.515Z","warrantyExpired":false,"overdue":false,"customer":{"id":58,"fullName":"Khách demo API"
+
+== T8. Lịch sử trạng thái (4 dòng)
+  — → NEW  (Lê Thu)  Tiếp nhận phiếu bảo hành
+  NEW → CLASSIFIED  (Trần Minh)  Phân loại: Pin
+  CLASSIFIED → ASSIGNED  (Trần Minh)  Phân công cho Phạm Huy
+  ASSIGNED → IN_PROGRESS  (Phạm Huy)  Kỹ thuật viên xác nhận nhận phiếu
+
+== T2. Danh sách phiếu lọc theo trạng thái Đang xử lý, tìm theo mã
+GET /tickets?status=IN_PROGRESS&q=BH-2026-000018 → HTTP 200
+{"items":[{"id":40,"ticketCode":"BH-2026-000018","deviceId":60,"issueDescription":"Máy tự tắt khi còn 30% pin","issueCategoryId":2,"priority":"HIGH","dueDate":"2026-11-15T07:01:51.442Z","status":"IN_PROGRESS","assignedTo":3,"createdBy":1,"createdAt":"2026-11-14T07:01:51.351Z","updatedAt":"2026-11-14T07:01:51.515Z","warrantyExpired":false,"overdue":false,"customer":{"id":58,"fullName":"Khách
+
+== S1. Xoá khách hàng còn thiết bị → 409 CUSTOMER_HAS_DEVICES
+DELETE /customers/58 → HTTP 409
+{"error":{"code":"CUSTOMER_HAS_DEVICES","message":"Khách hàng còn 1 thiết bị nên không xoá được. Xoá thiết bị trước.","details":{"deviceCount":1}}}
+
+== Không có token → 401
+GET /tickets → HTTP 401
+{"error":{"code":"TOKEN_REQUIRED","message":"Bạn cần đăng nhập để dùng chức năng này."}}
+
+Xong. Phiếu demo: BH-2026-000018

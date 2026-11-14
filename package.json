@@ -1,0 +1,26 @@
+{
+  "name": "baitap02-cdtn1",
+  "version": "0.2.1",
+  "description": "Smart CRM – Mekong Mobile · Luồng L2: Tiếp nhận và phân loại yêu cầu bảo hành (Giang Huy Khải – 2374802010205)",
+  "author": "Giang Huy Khải – 2374802010205",
+  "main": "src/backend/server.js",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/backend/server.js",
+    "dev": "node --watch src/backend/server.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test --test-reporter=spec tests/*.unit.test.js",
+    "test:db": "node --test --test-reporter=spec --test-concurrency=1 tests/*.db.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.10",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1"
+  }
+}
