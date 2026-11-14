@@ -1,0 +1,222 @@
+$ node scripts/tc.js TC-01 … TC-12  (chạy từng test case, máy chủ npm start + CSDL vừa migrate + seed)
+
+════ TC-01 · Đăng nhập · luồng đúng · A1 ════
+14:17:44 14/11/2026
+$ POST /api/auth/login {"username":"tn1","password":"Matkhau@123"}
+  → HTTP 200 · token=eyJhbGciOiJIUzI1… · Lê Thu (RECEPTIONIST)
+✔ tn1: HTTP 200, có token, vai trò RECEPTIONIST  (thực tế: 200 · RECEPTIONIST)
+✔ tn1: không trả password_hash
+$ POST /api/auth/login {"username":"dp1","password":"Matkhau@123"}
+  → HTTP 200 · token=eyJhbGciOiJIUzI1… · Trần Minh (COORDINATOR)
+✔ dp1: HTTP 200, có token, vai trò COORDINATOR  (thực tế: 200 · COORDINATOR)
+✔ dp1: không trả password_hash
+$ POST /api/auth/login {"username":"kt1","password":"Matkhau@123"}
+  → HTTP 200 · token=eyJhbGciOiJIUzI1… · Phạm Huy (TECHNICIAN)
+✔ kt1: HTTP 200, có token, vai trò TECHNICIAN  (thực tế: 200 · TECHNICIAN)
+✔ kt1: không trả password_hash
+KẾT QUẢ TC-01: PASS (6/6 kiểm tra đạt)
+
+════ TC-02 · Đăng nhập · dữ liệu sai + tài khoản khoá · A1 ════
+14:17:44 14/11/2026
+$ POST /api/auth/login {"username":"tn1","password":"sai-mat-khau"}
+  → HTTP 401 · INVALID_CREDENTIALS – Tên đăng nhập hoặc mật khẩu không đúng.
+✔ Sai mật khẩu → 401 INVALID_CREDENTIALS, không có token  (thực tế: 401)
+$ POST /api/auth/login {"username":"khong-ton-tai","password":"Matkhau@123"}
+  → HTTP 401 · INVALID_CREDENTIALS – Tên đăng nhập hoặc mật khẩu không đúng.
+✔ Sai tên đăng nhập → cùng thông báo 401 (không lộ tài khoản tồn tại)  (thực tế: 401)
+$ POST /api/auth/login {"username":"kt3","password":"Matkhau@123"}
+  → HTTP 403 · ACCOUNT_LOCKED – Tài khoản đã bị khoá. Liên hệ quản lý trung tâm.
+✔ kt3 đã khoá → 403 ACCOUNT_LOCKED  (thực tế: 403)
+$ POST /api/auth/login {"username":"","password":""}
+  → HTTP 400 · CREDENTIALS_REQUIRED – Vui lòng nhập tên đăng nhập và mật khẩu.
+✔ Để trống → 400 CREDENTIALS_REQUIRED  (thực tế: 400)
+KẾT QUẢ TC-02: PASS (4/4 kiểm tra đạt)
+
+════ TC-03 · Tra cứu khách hàng theo SĐT · luồng đúng + ngoại lệ 2a, 3a · UC07 ════
+14:17:45 14/11/2026
+$ GET /api/customers/by-phone/0901%20234%20567  [token]
+  → HTTP 200 · khách hàng #1 Nguyễn Văn An · 0901234567
+✔ SĐT có dấu cách "0901 234 567" → 200, đúng khách Nguyễn Văn An  (thực tế: 200 · Nguyễn Văn An)
+$ GET /api/customers/by-phone/%2B84901234567  [token]
+  → HTTP 200 · khách hàng #1 Nguyễn Văn An · 0901234567
+✔ Dạng +84 → chuẩn hoá về 0901234567, tìm thấy cùng khách  (thực tế: 200)
+$ GET /api/customers/by-phone/090123  [token]
+  → HTTP 400 · INVALID_PHONE – Số điện thoại không hợp lệ (10 chữ số, bắt đầu bằng 0).
+✔ 2a: SĐT 6 chữ số → 400 INVALID_PHONE  (thực tế: 400)
+$ GET /api/customers/by-phone/0999000999  [token]
+  → HTTP 404 · CUSTOMER_NOT_FOUND – Chưa có khách hàng với số điện thoại này.
+✔ 3a: SĐT hợp lệ nhưng chưa có → 404 CUSTOMER_NOT_FOUND  (thực tế: 404)
+KẾT QUẢ TC-03: PASS (4/4 kiểm tra đạt)
+
+════ TC-04 · Tạo phiếu bảo hành · luồng đúng · UC01, FR1, BR1 ════
+14:17:45 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0997127318, thiết bị IMEI 970766559082192
+Số phiếu trước: 16
+$ POST /api/tickets {"phone":"0997127318","imei":"970766559082192","issueDescription":"Máy tự tắt khi còn 30% pin"}  [token]
+  → HTTP 201 · BH-2026-000017 · status=NEW
+Số phiếu sau:   17
+✔ HTTP 201  (thực tế: 201)
+✔ Mã phiếu dạng BH-YYYY-NNNNNN  (thực tế: BH-2026-000017)
+✔ Trạng thái Mới (NEW), gắn đúng khách hàng + thiết bị (BR1)
+✔ Số phiếu +1  (thực tế: 16 → 17)
+$ GET /api/tickets/BH-2026-000017/history  [token]
+  → HTTP 200 · 1 dòng
+✔ Lịch sử có đúng 1 dòng → NEW do Lê Thu tạo (NFR5)
+KẾT QUẢ TC-04: PASS (5/5 kiểm tra đạt)
+
+════ TC-05 · Tạo phiếu · giá trị biên IMEI 14 / 15 / 16 chữ số · UC01-4a ════
+14:17:45 14/11/2026
+Số phiếu trước: 17   (dữ liệu thử: khách mới 0954617847)
+$ POST /api/tickets {"phone":"0954617847","issueDescription":"Màn hình sọc","customer":{"fullName":"Khách TC05"},"device":{"model":"Xiaomi 13","warrantyEndDate":"2027-06-30"},"imei":"34884207160885"}  [token]
+  → HTTP 400 · INVALID_IMEI – IMEI phải gồm 15 chữ số.
+✔ IMEI 14 chữ số → 400 INVALID_IMEI  (thực tế: 400)
+$ POST /api/tickets {"phone":"0954617847","issueDescription":"Màn hình sọc","customer":{"fullName":"Khách TC05"},"device":{"model":"Xiaomi 13","warrantyEndDate":"2027-06-30"},"imei":"4585484107995514"}  [token]
+  → HTTP 400 · INVALID_IMEI – IMEI phải gồm 15 chữ số.
+✔ IMEI 16 chữ số → 400 INVALID_IMEI  (thực tế: 400)
+✔ Hai lần bị từ chối không tạo phiếu nào  (thực tế: 17 → 17)
+$ POST /api/tickets {"phone":"0954617847","issueDescription":"Màn hình sọc","customer":{"fullName":"Khách TC05"},"device":{"model":"Xiaomi 13","warrantyEndDate":"2027-06-30"},"imei":"974397510208165"}  [token]
+  → HTTP 201 · BH-2026-000018 · status=NEW
+✔ IMEI đúng 15 chữ số → 201, phiếu Mới  (thực tế: 201 · BH-2026-000018)
+Số phiếu sau:   18
+✔ Số phiếu chỉ +1  (thực tế: 17 → 18)
+KẾT QUẢ TC-05: PASS (5/5 kiểm tra đạt)
+
+════ TC-06 · Tạo phiếu · vi phạm BR2 (một IMEI một phiếu chưa đóng) · BR2, UC01-5b ════
+14:17:45 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0972300313, thiết bị IMEI 978263326892333
+Tiền điều kiện (tự tạo): phiếu BH-2026-000019 ở trạng thái NEW
+Số phiếu trước: 19
+$ POST /api/tickets {"phone":"0972300313","imei":"978263326892333","issueDescription":"Tạo lần 2"}  [token]
+  → HTTP 409 · OPEN_TICKET_EXISTS – Thiết bị đang có phiếu BH-2026-000019 chưa đóng.
+✔ Tầng nghiệp vụ: 409 OPEN_TICKET_EXISTS, chỉ ra phiếu đang mở  (thực tế: 409 · BH-2026-000019)
+✔ Số phiếu không đổi  (thực tế: 19 → 19)
+$ SQL: INSERT INTO ticket (…device_id = thiết bị 978263326892333, status = 'NEW'…)  [bỏ qua service, sau đó ROLLBACK]
+  → lỗi 23505 · constraint ux_ticket_open_device
+✔ Tầng CSDL: UNIQUE một phần ux_ticket_open_device chặn (23505)
+KẾT QUẢ TC-06: PASS (3/3 kiểm tra đạt)
+
+════ TC-07 · Phân loại phiếu · luồng đúng, hạn xử lý theo BR4 · UC02, FR2, BR4 ════
+14:17:46 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0967171265, thiết bị IMEI 979250623958035
+Tiền điều kiện (tự tạo): phiếu BH-2026-000020 ở trạng thái NEW
+$ POST /api/tickets/BH-2026-000020/classify {"issueCategoryId":2,"priority":"HIGH"}  [token]
+  → HTTP 200 · BH-2026-000020 · status=CLASSIFIED · priority=HIGH
+✔ HTTP 200, trạng thái Đã phân loại (CLASSIFIED)  (thực tế: 200 · CLASSIFIED)
+✔ Danh mục Pin, mức ưu tiên Cao
+✔ Hạn xử lý = lúc phân loại + 24 giờ (BR4)  (thực tế: 24.000 giờ)
+$ GET /api/tickets/BH-2026-000020/history  [token]
+  → HTTP 200 · 2 dòng
+✔ Lịch sử thêm dòng NEW → CLASSIFIED do Trần Minh
+KẾT QUẢ TC-07: PASS (4/4 kiểm tra đạt)
+
+════ TC-08 · Phân loại phiếu · dữ liệu sai · TD-11 ════
+14:17:46 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0949720680, thiết bị IMEI 971693378507058
+Tiền điều kiện (tự tạo): phiếu BH-2026-000021 ở trạng thái NEW
+$ POST /api/tickets/BH-2026-000021/classify {"priority":"HIGH"}  [token]
+  → HTTP 400 · ISSUE_CATEGORY_REQUIRED – Vui lòng chọn danh mục lỗi.
+✔ Thiếu danh mục → 400 ISSUE_CATEGORY_REQUIRED  (thực tế: 400)
+$ POST /api/tickets/BH-2026-000021/classify {"issueCategoryId":999,"priority":"HIGH"}  [token]
+  → HTTP 400 · ISSUE_CATEGORY_INVALID – Danh mục lỗi không tồn tại hoặc đã ngừng dùng.
+✔ Danh mục không tồn tại → 400 ISSUE_CATEGORY_INVALID  (thực tế: 400)
+$ POST /api/tickets/BH-2026-000021/classify {"issueCategoryId":1,"priority":"URGENT"}  [token]
+  → HTTP 400 · INVALID_PRIORITY – Vui lòng chọn mức ưu tiên: Cao, Trung bình hoặc Thấp.
+✔ Mức ưu tiên lạ → 400 INVALID_PRIORITY  (thực tế: 400)
+$ GET /api/tickets/BH-2026-000021  [token]
+  → HTTP 200 · BH-2026-000021 · status=NEW
+✔ Phiếu vẫn Mới, lịch sử vẫn 1 dòng (không ghi gì)  (thực tế: NEW · 1 dòng)
+KẾT QUẢ TC-08: PASS (4/4 kiểm tra đạt)
+
+════ TC-09 · Phân công + kỹ thuật viên nhận phiếu · luồng đúng · UC03, UC05, UC06 ════
+14:17:46 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0964904452, thiết bị IMEI 978671003636290
+Tiền điều kiện (tự tạo): phiếu BH-2026-000022 ở trạng thái CLASSIFIED
+$ GET /api/technicians  [token]
+  → HTTP 200 · 2 dòng
+✔ L2 chỉ liệt kê kỹ thuật viên đang hoạt động (không có kt3)  (thực tế: kt1, kt2)
+$ POST /api/tickets/BH-2026-000022/assign {"technicianId":3}  [token]
+  → HTTP 200 · BH-2026-000022 · status=ASSIGNED · priority=HIGH · kỹ thuật viên=Phạm Huy
+✔ Phân công Phạm Huy → 200, Đã phân công (ASSIGNED)  (thực tế: 200 · ASSIGNED)
+$ POST /api/tickets/BH-2026-000022/acknowledge  [token]
+  → HTTP 200 · BH-2026-000022 · status=IN_PROGRESS · priority=HIGH · kỹ thuật viên=Phạm Huy
+✔ kt1 xác nhận nhận phiếu → 200, Đang xử lý (IN_PROGRESS)  (thực tế: 200 · IN_PROGRESS)
+$ GET /api/tickets/BH-2026-000022/history  [token]
+  → HTTP 200 · 4 dòng
+    — → NEW  (Lê Thu)  Tiếp nhận phiếu bảo hành
+    NEW → CLASSIFIED  (Trần Minh)  Phân loại: Màn hình
+    CLASSIFIED → ASSIGNED  (Trần Minh)  Phân công cho Phạm Huy
+    ASSIGNED → IN_PROGRESS  (Phạm Huy)  Kỹ thuật viên xác nhận nhận phiếu
+✔ Lịch sử đủ 4 dòng đúng thứ tự NEW → CLASSIFIED → ASSIGNED → IN_PROGRESS
+KẾT QUẢ TC-09: PASS (4/4 kiểm tra đạt)
+
+════ TC-10 · Phân quyền · bảo mật (OWASP A01 – Broken Access Control) · NFR4, BR5 ════
+14:17:46 14/11/2026
+Tiền điều kiện (tự tạo): khách Khách TC – 0925438801, thiết bị IMEI 974135065149211
+Tiền điều kiện (tự tạo): phiếu BH-2026-000023 ở trạng thái ASSIGNED
+Tiền điều kiện (tự tạo): khách Khách TC – 0925617136, thiết bị IMEI 977525156042947
+Tiền điều kiện (tự tạo): phiếu BH-2026-000024 ở trạng thái NEW
+$ POST /api/tickets/BH-2026-000024/classify {"issueCategoryId":1,"priority":"HIGH"}  [token]
+  → HTTP 403 · ROLE_NOT_ALLOWED – Vai trò của bạn không được phép phân loại phiếu.
+✔ Nhân viên tiếp nhận gọi phân loại → 403 ROLE_NOT_ALLOWED  (thực tế: 403)
+✔ … và phiếu vẫn Mới  (thực tế: NEW)
+$ GET /api/tickets/BH-2026-000023  [token]
+  → HTTP 403 · TICKET_NOT_ASSIGNED_TO_YOU – Phiếu này không được phân công cho bạn.
+✔ kt2 mở phiếu đã giao cho kt1 → 403 TICKET_NOT_ASSIGNED_TO_YOU  (thực tế: 403)
+$ POST /api/customers {"fullName":"X","phone":"0936262891"}  [token]
+  → HTTP 403 · ROLE_NOT_ALLOWED – Vai trò của bạn không được phép thêm khách hàng.
+✔ Điều phối viên thêm khách hàng → 403 (chỉ được xem)  (thực tế: 403)
+$ GET /api/tickets
+  → HTTP 401 · TOKEN_REQUIRED – Bạn cần đăng nhập để dùng chức năng này.
+✔ Không có token → 401 TOKEN_REQUIRED  (thực tế: 401)
+$ GET /api/tickets  [token]
+  → HTTP 401 · TOKEN_INVALID – Phiên đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.
+✔ Token giả mạo vai trò Điều phối viên → 401 TOKEN_INVALID  (thực tế: 401)
+KẾT QUẢ TC-10: PASS (6/6 kiểm tra đạt)
+
+════ TC-11 · Danh sách phiếu · lọc, phân trang, chống SQL injection · UC04, FR4 ════
+14:17:47 14/11/2026
+$ GET /api/tickets  [token]
+  → HTTP 200 · total=24 · page=1/2
+✔ Mặc định trang 1, 20 phiếu/trang  (thực tế: total=24)
+$ GET /api/tickets?status=CLASSIFIED&priority=HIGH  [token]
+  → HTTP 200 · total=3 · page=1/1
+✔ Lọc Đã phân loại + Cao: mọi dòng đúng điều kiện  (thực tế: 3 phiếu)
+    phiếu quá hạn được đánh dấu: BH-2026-000005, BH-2026-000007
+$ GET /api/tickets?q='%20OR%20'1'%3D'1  [token]
+  → HTTP 200 · total=0 · page=1/1
+✔ q = ' OR '1'='1 → 200, total = 0 (SQL tham số hoá, không lộ dữ liệu)  (thực tế: total=0 trong khi CSDL có 24)
+$ GET /api/tickets?pageSize=101  [token]
+  → HTTP 400 · INVALID_PAGE_SIZE – Số dòng mỗi trang từ 1 đến 100.
+✔ pageSize = 101 (vượt biên 100) → 400 INVALID_PAGE_SIZE  (thực tế: 400)
+$ GET /api/tickets?dueFrom=2026-12-31&dueTo=2026-01-01  [token]
+  → HTTP 400 · INVALID_DATE_RANGE – "Hạn từ" phải trước hoặc bằng "hạn đến".
+✔ Hạn từ > hạn đến → 400 INVALID_DATE_RANGE  (thực tế: 400)
+KẾT QUẢ TC-11: PASS (5/5 kiểm tra đạt)
+
+════ TC-12 · Khách hàng & thiết bị · CRUD, ràng buộc xoá · S1, S2, TD-13 ════
+14:17:47 14/11/2026
+Số khách hàng trước: 33
+$ POST /api/customers {"fullName":"Khách TC12","phone":"0901120535"}  [token]
+  → HTTP 201 · khách hàng #34 Khách TC12 · 0901120535
+✔ Thêm khách → 201  (thực tế: 201)
+$ PUT /api/customers/34 {"fullName":"Khách TC12 (đã sửa)","phone":"0901120535"}  [token]
+  → HTTP 200 · khách hàng #34 Khách TC12 (đã sửa) · 0901120535
+✔ Sửa họ tên → 200  (thực tế: 200)
+$ POST /api/devices {"customerId":34,"imei":"972654084503229","model":"Oppo A79","warrantyEndDate":"2027-03-31"}  [token]
+  → HTTP 201 · thiết bị #35 972654084503229 · Oppo A79
+✔ Thêm thiết bị → 201  (thực tế: 201)
+$ DELETE /api/customers/34  [token]
+  → HTTP 409 · CUSTOMER_HAS_DEVICES – Khách hàng còn 1 thiết bị nên không xoá được. Xoá thiết bị trước.
+✔ Xoá khách còn thiết bị → 409 CUSTOMER_HAS_DEVICES  (thực tế: 409)
+$ DELETE /api/devices/35  [token]
+  → HTTP 204
+✔ Xoá thiết bị chưa có phiếu → 204  (thực tế: 204)
+$ DELETE /api/customers/34  [token]
+  → HTTP 204
+✔ Xoá khách (đã hết thiết bị) → 204  (thực tế: 204)
+Số khách hàng sau:   33
+✔ Số khách hàng trở về như trước  (thực tế: 33 → 33)
+$ DELETE /api/devices/3  [token]
+  → HTTP 409 · DEVICE_HAS_TICKETS – Thiết bị đã có phiếu bảo hành nên không xoá được (BR6: phiếu không bao giờ bị xoá).
+✔ Xoá thiết bị đã có phiếu → 409 DEVICE_HAS_TICKETS (BR6)  (thực tế: 409)
+KẾT QUẢ TC-12: PASS (8/8 kiểm tra đạt)

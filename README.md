@@ -75,6 +75,7 @@ Mỗi bước một lệnh, chạy lần lượt trong terminal, bắt đầu t�
 | 10 | Unit test lớp nghiệp vụ (không cần CSDL) | `npm test` |
 | 11 | Test với CSDL thật (cần bước 7–8) | `npm run test:db` |
 | 12 | Gọi thử toàn bộ API (terminal khác, khi bước 9 đang chạy) | `bash scripts/demo-api.sh` |
+| 13 | Chạy 12 test case hệ thống (terminal khác, khi bước 9 đang chạy) | `node scripts/tc.js all` (một test case: `node scripts/tc.js TC-05`) |
 
 Bước 7 và 8 chạy lại nhiều lần không lỗi, không nhân đôi dữ liệu (lần hai in "mới 0"). Bước 11 tự tạo dữ liệu thử với SĐT / IMEI ngẫu nhiên và dọn lại sau khi chạy.
 
@@ -164,7 +165,7 @@ baitap02-cdtn1/
 ├── db/schema.sql               # DDL nộp ở BT1 (tài liệu)
 ├── db/migrations/              # migration chạy thật: 001_init_schema.sql
 ├── dataset/                    # dữ liệu case study – nguồn cho seed
-├── scripts/                    # migrate.js, seed.js, demo-api.sh
+├── scripts/                    # migrate.js, seed.js, demo-api.sh, tc.js (12 test case)
 ├── tests/                      # *.unit.test.js (npm test) · *.db.test.js (npm run test:db) · helpers/
 ├── docs/                       # SRS, sơ đồ .drawio + ảnh xuất, API contract, nhật ký thay đổi, bug log, kết quả chạy
 ├── Dockerfile, docker-compose.yml, .dockerignore
@@ -179,6 +180,7 @@ baitap02-cdtn1/
 | `npm run test:db` | 19 test với PostgreSQL thật: 3 ca BR2 (TD-04) + 16 ca API end-to-end | **19 / 19 pass** – [`docs/ket-qua/03-test-db.txt`](docs/ket-qua/03-test-db.txt) |
 | `npm run migrate`, `npm run seed` (2 lần) | chạy lại không lỗi, không trùng | [`docs/ket-qua/01-migrate-seed.txt`](docs/ket-qua/01-migrate-seed.txt) |
 | `bash scripts/demo-api.sh` | gọi toàn bộ luồng chính bằng curl | [`docs/ket-qua/04-demo-api.txt`](docs/ket-qua/04-demo-api.txt) |
+| `node scripts/tc.js all` | 12 test case hệ thống theo chức năng, máy chủ + CSDL thật | **12 / 12 PASS** – [`docs/test-report.md`](docs/test-report.md), ảnh [`docs/ket-qua/test-case/`](docs/ket-qua/test-case/) |
 
 - [x] Luồng chính UC01 → UC02 → UC03 → UC05 → UC06 chạy end-to-end trên giao diện với dữ liệu thật
 - [x] Đủ 7 luồng ngoại lệ UC01 trên M1; xung đột UC03-4b trả `409 DATA_CHANGED`
@@ -208,7 +210,8 @@ Các thay đổi so với thiết kế BT1 và lý do: [`docs/thay-doi-thiet-ke.
 | Nhật ký thay đổi thiết kế | [`docs/thay-doi-thiet-ke.md`](docs/thay-doi-thiet-ke.md) | Xem trực tiếp trên GitHub |
 | Nhật ký lỗi | [`docs/bug-log.md`](docs/bug-log.md) | Xem trực tiếp trên GitHub |
 | Khai báo sử dụng AI | [`docs/ai-disclosure.md`](docs/ai-disclosure.md) | Xem trực tiếp trên GitHub |
-| Kết quả chạy | [`docs/ket-qua/`](docs/ket-qua/) | Log lệnh và ảnh giao diện |
+| Test Plan · Test Report (12 test case) | [`docs/test-plan.md`](docs/test-plan.md) · [`docs/test-report.md`](docs/test-report.md) | Xem trực tiếp trên GitHub |
+| Kết quả chạy | [`docs/ket-qua/`](docs/ket-qua/) | Log lệnh, ảnh giao diện, ảnh test case |
 
 **Nhật ký phiên bản**
 
