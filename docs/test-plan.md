@@ -8,10 +8,9 @@ Repo: https://github.com/huykhaii2/baitap02-cdtn1
 **Kiểm (12 test case theo chức năng):** đăng nhập (A1) · tra cứu khách hàng (UC07) · tạo phiếu bảo hành (UC01, BR1, BR2) · phân loại phiếu (UC02, BR4) · phân công và nhận phiếu (UC03, UC05, UC06) · phân quyền theo vai trò (NFR4, BR5) · danh sách phiếu (UC04, FR4) · CRUD khách hàng và thiết bị (S1, S2, TD-13).
 
 **Cố ý KHÔNG kiểm (và lý do):**
-- Hiệu năng NFR1 (≤ 2 giây p95 với 10.000 phiếu): chưa đo ở BT2 (README mục 6), làm trước BT3.
+- Hiệu năng NFR1 (≤ 2 giây p95 với 10.000 phiếu): chưa có công cụ tải và dữ liệu 10.000 phiếu; mới có index `(status, due_date)` và phân trang trong CSDL – ghi là phần còn thiếu.
 - Khả dụng NFR2 (người dùng mới tạo phiếu ≤ 3 phút): cần thử với người thật, không tự động hoá được.
 - Gửi SMS (FR6 – WON'T), sửa chữa / trả máy: ngoài phạm vi L2.
-- Chạy bằng Docker: có `Dockerfile` nhưng chưa kiểm (README mục 6).
 
 ## 2. Loại test và số lượng mỗi tầng
 
@@ -58,7 +57,7 @@ Repo: https://github.com/huykhaii2/baitap02-cdtn1
 
 - 12/12 test case có kết quả thực tế ghi bằng số liệu cụ thể và ảnh `docs/ket-qua/test-case/TC-xx.png`.
 - Mỗi FR mức MUST/SHOULD và mỗi quy tắc BR1–BR6 có ≥ 1 test (bảng mục 3).
-- `npm test` và `npm run test:db` đạt toàn bộ (0 fail).
+- `npm test` và `npm run test:db` đạt toàn bộ (0 fail), cả trên máy và trong container (`docs/ket-qua/may-trang/`).
 - Không còn lỗi mức Nghiêm trọng đang mở trong `docs/bug-log.md`.
 
 ## 5. Môi trường và dữ liệu thử

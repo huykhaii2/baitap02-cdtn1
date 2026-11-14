@@ -190,8 +190,9 @@ baitap02-cdtn1/
 - [x] Mất kết nối CSDL trả `503 DB_UNAVAILABLE`, giao diện hiện lỗi kèm *Thử lại* (TD-14)
 - [x] Tách `src/backend` và `src/frontend` (TD-15); giao diện dùng được trên điện thoại
 - [x] `.env` thật không còn trong repo (TD-17); repo mới `baitap02-cdtn1` có lịch sử commit sạch, không chứa khoá cũ (TD-26)
-- [ ] **Chưa đo NFR1** (≤ 2 giây p95 với 10.000 phiếu) – đã có index `(status, due_date)` và phân trang trong CSDL; đo trước BT3
+- [ ] **Chưa đo NFR1** (≤ 2 giây p95 với 10.000 phiếu) – đã có index `(status, due_date)` và phân trang trong CSDL; chưa có công cụ tải và dữ liệu 10.000 phiếu để đo
 - [x] **Đóng gói Docker (BT3):** `cp .env.example .env` + `docker compose up -d --build` → `app`, `db` healthy; `npm test` 82/82 và `npm run test:db` 19/19 trong container – ảnh `docs/ket-qua/docker/`, hướng dẫn `docs/deployment-guide.md`
+- [x] **Phép thử máy trắng (BT3):** clone theo tag `v1.0` vào thư mục trống, làm đúng Deployment Guide → healthy, `npm test` 82/82, `tc.js all` 12/12 – ảnh `docs/ket-qua/may-trang/`
 
 Các thay đổi so với thiết kế BT1 và lý do: [`docs/thay-doi-thiet-ke.md`](docs/thay-doi-thiet-ke.md) (TD-01 → TD-26). Lỗi đã gặp và cách sửa: [`docs/bug-log.md`](docs/bug-log.md).
 
