@@ -46,5 +46,5 @@ Các lỗi gặp khi dựng lại mã nguồn sau phản hồi BT2 (14/11/2026).
 - **Tái lập:** `docker compose up -d --build` → `docker compose exec app npm test` → `pass 81, fail 1`: `tests/architecture.unit.test.js:56 – ENOENT: no such file or directory, open '/app/.gitignore'`. Cùng lệnh chạy trên máy thì 82/82 pass.
 - **Nguyên nhân:** test đọc `.gitignore` và `.env.example` để kiểm `.env` bị chặn, nhưng `Dockerfile` chỉ `COPY src scripts db dataset tests` – hai tệp này không có trong image. Đúng loại lỗi slide buổi 15 nêu: "Test PASS trên máy sinh viên, FAIL trong container".
 - **Sửa:** `Dockerfile` thêm `COPY .gitignore .env.example ./` (hai tệp không chứa bí mật; `.env` thật vẫn bị `.dockerignore` chặn).
-- **Kiểm lại:** build lại image, `docker compose exec app npm test` → `pass 82, fail 0`.
+- **Kiểm lại:** build lại image, `docker compose exec app npm test` → `pass 82, fail 0`. Ảnh trước / sau: `docs/ket-qua/docker/BUG-06-truoc-npm-test-fail.png`, `docs/ket-qua/docker/02-docker-npm-test-pass.png`.
 
