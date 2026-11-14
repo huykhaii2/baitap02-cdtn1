@@ -12,7 +12,7 @@ Chạy trên CSDL PostgreSQL 16 trống, Node.js 22, theo đúng thứ tự READ
 
 ## Ảnh test case (`test-case/`)
 
-`TC-01.png` … `TC-12.png`: ảnh chụp đầu ra terminal khi chạy `node scripts/tc.js TC-xx` (máy chủ `npm start` + CSDL vừa migrate + seed), cùng lần chạy với `05-test-case.txt`.
+`TC-01.png` … `TC-12.png`: ảnh chụp màn hình PowerShell trên máy em (Windows, Node.js v22.16.0) khi chạy `node scripts/tc.js all` lúc 14:30 ngày 14/11/2026 (máy chủ `npm start` + CSDL vừa migrate + seed); mỗi ảnh cắt đúng một test case. `05-test-case.txt` là nhật ký chữ của một lần chạy khác cùng bản mã (Linux), cùng kết quả 12/12.
 
 ## Ảnh giao diện (`anh/`)
 

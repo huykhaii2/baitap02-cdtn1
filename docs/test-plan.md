@@ -63,7 +63,7 @@ Repo: https://github.com/huykhaii2/baitap02-cdtn1
 
 ## 5. Môi trường và dữ liệu thử
 
-- Máy chạy: Linux, Node.js 22, PostgreSQL 16. Trình duyệt kiểm giao diện: Chrome.
+- Máy chạy 12 test case (ảnh minh chứng): Windows, PowerShell, Node.js v22.16.0, PostgreSQL 16. Bộ test tự động và ảnh giao diện còn được chạy trên Linux, Node.js 22. Trình duyệt kiểm giao diện: Chrome.
 - Dữ liệu: CSDL trống → `npm run migrate` → `npm run seed` (5 tài khoản, 6 danh mục lỗi, 25 khách hàng, 26 thiết bị, 16 phiếu).
 - Máy chủ: `npm start` (http://localhost:3000).
 - Mỗi test case **tự tạo** khách hàng / thiết bị / phiếu mới với SĐT, IMEI ngẫu nhiên (in ra ở dòng *Tiền điều kiện*) nên chạy lại được nhiều lần, không phụ thuộc thứ tự. TC-06 chèn thẳng vào CSDL trong giao dịch rồi `ROLLBACK`, không để lại dữ liệu.

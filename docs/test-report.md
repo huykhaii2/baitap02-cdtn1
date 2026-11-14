@@ -8,10 +8,10 @@ Giang Huy Khải – 2374802010205 – Lớp 71k29cntt03 · Ngày chạy: 14/11/
 Bộ test tự động cùng bản mã: `npm test` 82 / 82 pass · `npm run test:db` 19 / 19 pass.
 
 - Chạy lại: `npm start` ở một terminal, rồi `node scripts/tc.js TC-xx` (hoặc `all`) ở terminal khác.
-- Ảnh chụp đầu ra terminal của từng lần chạy: [`docs/ket-qua/test-case/TC-xx.png`](ket-qua/test-case/).
-- Nhật ký chữ đầy đủ của lần chạy: [`docs/ket-qua/05-test-case.txt`](ket-qua/05-test-case.txt).
+- Ảnh minh chứng: [`docs/ket-qua/test-case/TC-xx.png`](ket-qua/test-case/) – chụp màn hình PowerShell **trên máy em** (Windows, Node.js v22.16.0, PostgreSQL 16) khi chạy `node scripts/tc.js all` lúc 14:30 ngày 14/11/2026, CSDL vừa migrate + seed; mỗi ảnh cắt đúng một test case.
+- Nhật ký chữ: [`docs/ket-qua/05-test-case.txt`](ket-qua/05-test-case.txt) – một lần chạy khác của cùng bản mã trên môi trường Linux, cùng kết quả 12/12 và cùng mã phiếu.
 
-> Bảng đủ 8 cột: mã · tiền điều kiện · các bước · dữ liệu thử · kết quả mong đợi · mức ưu tiên · kết quả thực tế · PASS/FAIL. Cột mã ghi kèm chức năng, loại test và yêu cầu được truy vết. Kết quả thực tế chép từ lần chạy thật (`05-test-case.txt`), không chép lại cột mong đợi. Mã phiếu, SĐT, IMEI trong cột thực tế là giá trị của lần chạy đó.
+> Bảng đủ 8 cột: mã · tiền điều kiện · các bước · dữ liệu thử · kết quả mong đợi · mức ưu tiên · kết quả thực tế · PASS/FAIL. Cột mã ghi kèm chức năng, loại test và yêu cầu được truy vết. Kết quả thực tế chép từ lần chạy thật (ảnh `TC-xx.png`), không chép lại cột mong đợi. SĐT, IMEI do script sinh ngẫu nhiên nên mỗi lần chạy khác nhau; mã phiếu và số đếm trùng nhau khi chạy trên CSDL vừa seed.
 
 | Mã · chức năng · loại · truy vết | Tiền điều kiện | Các bước | Dữ liệu thử | Kết quả mong đợi | Ưu tiên | Kết quả thực tế | P/F |
 |---|---|---|---|---|---|---|---|
