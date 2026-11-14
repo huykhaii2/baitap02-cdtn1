@@ -191,7 +191,7 @@ baitap02-cdtn1/
 - [x] Tách `src/backend` và `src/frontend` (TD-15); giao diện dùng được trên điện thoại
 - [x] `.env` thật không còn trong repo (TD-17); repo mới `baitap02-cdtn1` có lịch sử commit sạch, không chứa khoá cũ (TD-26)
 - [ ] **Chưa đo NFR1** (≤ 2 giây p95 với 10.000 phiếu) – đã có index `(status, due_date)` và phân trang trong CSDL; đo trước BT3
-- [ ] **Docker chưa kiểm** – có `Dockerfile`, `docker-compose.yml` (tự chạy migrate + seed) nhưng chưa chạy thử `docker compose up --build`; làm ở BT3
+- [x] **Đóng gói Docker (BT3):** `cp .env.example .env` + `docker compose up -d --build` → `app`, `db` healthy; `npm test` 82/82 và `npm run test:db` 19/19 trong container – ảnh `docs/ket-qua/docker/`, hướng dẫn `docs/deployment-guide.md`
 
 Các thay đổi so với thiết kế BT1 và lý do: [`docs/thay-doi-thiet-ke.md`](docs/thay-doi-thiet-ke.md) (TD-01 → TD-26). Lỗi đã gặp và cách sửa: [`docs/bug-log.md`](docs/bug-log.md).
 
@@ -206,7 +206,10 @@ Các thay đổi so với thiết kế BT1 và lý do: [`docs/thay-doi-thiet-ke.
 | Wireframe BT1 | [`docs/wireframe.drawio`](docs/wireframe.drawio) · ảnh [`docs/wireframe.png`](docs/wireframe.png) · đối chiếu ERD [`docs/wireframe.md`](docs/wireframe.md) | như trên |
 | Giao diện hiện tại | [`docs/wireframe-v0.2.png`](docs/wireframe-v0.2.png) | Ảnh chụp M1–M3 của bản `v0.2` |
 | SQL DDL | [`db/schema.sql`](db/schema.sql) | Bản nộp BT1; chạy thật bằng `npm run migrate` |
-| API contract | [`docs/api-contract.md`](docs/api-contract.md) | Xem trực tiếp trên GitHub |
+| API contract (tiếng Việt) | [`docs/api-contract.md`](docs/api-contract.md) | Xem trực tiếp trên GitHub |
+| **API docs (English, TP6)** | [`docs/api-docs.md`](docs/api-docs.md) | Mỗi endpoint 7 mục, ví dụ request/response chạy thật |
+| **Deployment Guide (English, TP5)** | [`docs/deployment-guide.md`](docs/deployment-guide.md) | 5 mục + Troubleshooting + Monitoring |
+| **Checklist bảo mật 7 mục (TP5)** | [`docs/checklist-bao-mat.md`](docs/checklist-bao-mat.md) | Mỗi mục có lệnh kiểm tra và ảnh `docs/ket-qua/bao-mat/` |
 | Nhật ký thay đổi thiết kế | [`docs/thay-doi-thiet-ke.md`](docs/thay-doi-thiet-ke.md) | Xem trực tiếp trên GitHub |
 | Nhật ký lỗi | [`docs/bug-log.md`](docs/bug-log.md) | Xem trực tiếp trên GitHub |
 | Khai báo sử dụng AI | [`docs/ai-disclosure.md`](docs/ai-disclosure.md) | Xem trực tiếp trên GitHub |

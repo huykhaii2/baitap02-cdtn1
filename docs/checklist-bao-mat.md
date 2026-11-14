@@ -23,7 +23,7 @@ Mỗi mục ghi trạng thái **ĐÃ LÀM / CHƯA LÀM / KHÔNG ÁP DỤNG** và
 git check-ignore -v .env
 git log --all --oneline -- .env backend/db/sql.env
 ```
-Kết quả: lệnh 1 in `.gitignore:2:.env	.env` (dòng `.gitignore` chặn tệp); lệnh 2 **không in dòng nào** – repo `baitap02-cdtn1` bắt đầu lịch sử mới (TD-26) nên `.env` và `sql.env` chưa từng được commit.
+Kết quả: lệnh 1 in `.gitignore:4:*.env   .env` (dòng 4 của `.gitignore` chặn tệp); lệnh 2 **không in dòng nào** – repo `baitap02-cdtn1` bắt đầu lịch sử mới (TD-26) nên `.env` và `sql.env` chưa từng được commit.
 
 **b) Không có mật khẩu / khoá ghi cứng trong mã nguồn**
 ```powershell
@@ -35,7 +35,7 @@ Kết quả: **rỗng**. Mọi giá trị nhạy cảm đọc từ biến môi t
 Repo cũ `huykhaii2/cdtn1-baitap02` từng commit `.env` và `backend/db/sql.env` chứa khoá Supabase (nhận xét BT2). Đã làm: gỡ hai tệp, chặn bằng `.gitignore` (TD-17), chuyển sang repo mới có lịch sử sạch (TD-26).
 Đổi mật khẩu database và khoá API trên Supabase: **CHƯA LÀM – phải làm trước khi nộp** *(làm xong thì sửa dòng này thành "ĐÃ LÀM ngày …")*.
 
-Ảnh: `docs/ket-qua/bao-mat/sec-1.png`
+Ảnh: `docs/ket-qua/bao-mat/sec-1.png` (chạy trên máy em, Windows PowerShell)
 
 ## 2. Dữ liệu vào được kiểm ở tầng ứng dụng — ĐÃ LÀM
 
