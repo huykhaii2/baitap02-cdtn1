@@ -231,7 +231,7 @@ async function seed({ log = console.log, now = new Date() } = {}) {
                            (SELECT COUNT(*) FROM ticket) AS ticket, (SELECT COUNT(*) FROM ticket_status_log) AS ticket_status_log`)
   ).rows[0];
   for (const table of Object.keys(added)) log(`  ${table.padEnd(18)} mới ${String(added[table]).padStart(3)} · tổng ${counts[table]}`);
-  log(`Seed xong. Tài khoản mẫu: tn1, dp1, kt1, kt2 (kt3 đã khoá) – mật khẩu ${DEMO_PASSWORD}`);
+  log("Seed xong. Tài khoản mẫu: tn1, dp1, kt1, kt2 (kt3 đã khoá) – mật khẩu xem README mục 3.");
   return added;
 }
 
