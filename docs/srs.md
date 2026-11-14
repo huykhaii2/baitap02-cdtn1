@@ -11,7 +11,7 @@
 | **Sinh viên** | Giang Huy Khải |
 | **MSSV** | 2374802010205 |
 | **Lớp** | 71k29cntt03 |
-| **Giảng viên** | ThS. Tran Van Thanh |
+| **Giảng viên** | ThS. Tran Cong Thanh |
 | **Ngày nộp** | 19/10/2026 (bản sửa theo phản hồi BT1) · cập nhật 14/11/2026 sau phản hồi BT2 |
 | **GitHub repo** | https://github.com/huykhaii2/baitap02-cdtn1 |
 
