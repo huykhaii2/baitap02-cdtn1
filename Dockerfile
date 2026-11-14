@@ -1,21 +1,21 @@
-# Smart CRM – Bảo hành (Node.js 22 + Express). Chạy: docker compose up --build
+# Smart CRM – Mekong Mobile · L2 (Node.js 22 + Express 4). Dựng: docker compose up -d --build
 FROM node:22-alpine
-
-ENV NODE_ENV=production
 WORKDIR /app
 
-# Cài thư viện trước để Docker tận dụng cache khi chỉ sửa mã nguồn.
+# 1. Tệp khoá trước → chỉ cài lại thư viện khi package-lock.json đổi (tận dụng cache).
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci --no-audit --no-fund
 
+# 2. Mã nguồn, migration, dữ liệu mẫu và test (BT3 chạy test TRONG container).
 COPY src ./src
 COPY scripts ./scripts
 COPY db ./db
 COPY dataset ./dataset
+COPY tests ./tests
 
-# Chạy bằng user thường (không dùng root).
+# 3. Không chạy bằng root.
 USER node
 EXPOSE 3000
 
-# Migration và seed đều chạy lại được nhiều lần không tạo bản ghi trùng (tiêu chí C5).
+# Bước khởi tạo tự động, chạy lại nhiều lần không trùng dữ liệu: migrate → seed → chạy máy chủ.
 CMD ["sh", "-c", "npm run migrate && npm run seed && npm start"]

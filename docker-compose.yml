@@ -1,36 +1,43 @@
-# Một lệnh dựng cả hệ thống:  docker compose up --build
-# Giao diện + API: http://localhost:3000   ·   Dừng: docker compose down   ·   Xoá cả dữ liệu: docker compose down -v
+# Dựng cả hệ thống bằng HAI lệnh (sau khi clone):
+#   cp .env.example .env
+#   docker compose up -d --build
+# Giao diện + API: http://localhost:3000 (đổi bằng APP_PORT trong .env)
+# Trạng thái: docker compose ps (db và app phải "healthy") · Dừng: docker compose down · Xoá cả dữ liệu: docker compose down -v
 services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: smartcrm
-      POSTGRES_USER: smartcrm
-      POSTGRES_PASSWORD: smartcrm
+      POSTGRES_DB: ${DB_NAME}            # lấy từ .env – không ghi cứng
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - dbdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U smartcrm -d smartcrm"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
       timeout: 3s
       retries: 20
+    # Không có "ports": CSDL chỉ mở trong mạng nội bộ của Compose (OWASP A02).
 
   app:
     build: .
+    env_file: .env                       # mọi biến của ứng dụng (SECRET_KEY, TOKEN_EXPIRES_IN…)
+    environment:
+      DB_HOST: db                        # TÊN DỊCH VỤ, không phải localhost
+      DB_PORT: 5432
+      APP_PORT: 3000                     # cổng BÊN TRONG container luôn là 3000
+    ports:
+      - "${APP_PORT:-3000}:3000"         # cổng mở ra máy: đổi APP_PORT trong .env nếu 3000 bận
     depends_on:
       db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db            # tên service, không phải localhost
-      DB_PORT: 5432
-      DB_NAME: smartcrm
-      DB_USER: smartcrm
-      DB_PASSWORD: smartcrm
-      APP_PORT: 3000
-      SECRET_KEY: doi-khoa-bi-mat-nay-khi-trien-khai   # chỉ dùng để chạy thử; đổi khi triển khai thật
-      TOKEN_EXPIRES_IN: 8h
-    ports:
-      - "3000:3000"
+        condition: service_healthy       # chờ CSDL SẴN SÀNG, không chỉ chờ container khởi động
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
 
 volumes:
-  pgdata:
+  dbdata: {}

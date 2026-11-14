@@ -1,3 +1,4 @@
+# Không chép vào image: thư viện của máy, git, secret, tài liệu, log
 node_modules
 .git
 .env
@@ -5,7 +6,6 @@ node_modules
 *.env
 !.env.example
 docs
-tests
 *.log
 Dockerfile
 docker-compose.yml
