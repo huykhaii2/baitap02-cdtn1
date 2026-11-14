@@ -12,6 +12,8 @@ COPY scripts ./scripts
 COPY db ./db
 COPY dataset ./dataset
 COPY tests ./tests
+# tests/architecture.unit.test.js đọc hai file này để kiểm .env bị chặn (BUG-06). Không chứa bí mật.
+COPY .gitignore .env.example ./
 
 # 3. Không chạy bằng root.
 USER node

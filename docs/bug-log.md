@@ -10,7 +10,8 @@ Các lỗi gặp khi dựng lại mã nguồn sau phản hồi BT2 (14/11/2026).
 | BUG-02 | Cao – sai dữ liệu lịch sử | Đã sửa |
 | BUG-03 | Trung bình – lọc / chọn sai bản ghi ở M4 | Đã sửa |
 | BUG-04 | Thấp – hiển thị trên điện thoại | Đã sửa |
-| BUG-05 | Cao – Docker không seed được | Đã sửa (chưa kiểm bằng Docker) |
+| BUG-05 | Cao – Docker không seed được | Đã sửa, đã kiểm bằng Docker |
+| BUG-06 | Trung bình – test hỏng khi chạy trong container | Đã sửa |
 
 ### BUG-01 Giao diện trắng trang: `/api/client.js` trả 401
 - **Tái lập:** `npm start`, mở http://localhost:3000 → trang trắng; DevTools báo `GET /api/client.js 401`.
@@ -39,4 +40,11 @@ Các lỗi gặp khi dựng lại mã nguồn sau phản hồi BT2 (14/11/2026).
 ### BUG-05 Docker: seed lỗi vì thiếu thư mục dataset
 - **Tái lập (đọc mã):** `scripts/seed.js` đọc `dataset/*.csv` nhưng `Dockerfile` chỉ `COPY src scripts db`.
 - **Sửa:** thêm `COPY dataset ./dataset`; đổi tệp `dockerignore` (thiếu dấu chấm nên Docker không đọc) thành `.dockerignore`.
-- **Kiểm lại:** chưa chạy được Docker trên máy dựng mã; cần chạy `docker compose up --build` ở Bài tập 3 (README mục 6).
+- **Kiểm lại:** `docker compose up -d --build` trên máy em (Windows, Docker Desktop) → log có `Seed xong`, `docker compose ps` báo `db` và `app` đều `healthy`.
+
+### BUG-06 Test "Bảo mật cấu hình" FAIL khi chạy trong container
+- **Tái lập:** `docker compose up -d --build` → `docker compose exec app npm test` → `pass 81, fail 1`: `tests/architecture.unit.test.js:56 – ENOENT: no such file or directory, open '/app/.gitignore'`. Cùng lệnh chạy trên máy thì 82/82 pass.
+- **Nguyên nhân:** test đọc `.gitignore` và `.env.example` để kiểm `.env` bị chặn, nhưng `Dockerfile` chỉ `COPY src scripts db dataset tests` – hai tệp này không có trong image. Đúng loại lỗi slide buổi 15 nêu: "Test PASS trên máy sinh viên, FAIL trong container".
+- **Sửa:** `Dockerfile` thêm `COPY .gitignore .env.example ./` (hai tệp không chứa bí mật; `.env` thật vẫn bị `.dockerignore` chặn).
+- **Kiểm lại:** build lại image, `docker compose exec app npm test` → `pass 82, fail 0`.
+
